@@ -60,12 +60,11 @@ public class VentanaPrincipal extends JFrame {
 
         // Crear paneles
         LoginPanel login = new LoginPanel(this);
-        PanelAdministrador adminPanel = new PanelAdministrador();
-        PanelEmpleado empleadoPanel = new PanelEmpleado();
+        panelContenedor.add(login, "login");
+        cardLayout.show(panelContenedor, "login");
+
 
         panelContenedor.add(login, "login");
-        panelContenedor.add(adminPanel, "admin");
-        panelContenedor.add(empleadoPanel, "empleado");
         
         cardLayout.show(panelContenedor, "login");
         panelContenedor.setBounds(0, 30, getWidth(), getHeight() - 30);
@@ -76,8 +75,28 @@ public class VentanaPrincipal extends JFrame {
     }
 
     public void mostrarPanel(String nombrePanel) {
-        cardLayout.show(panelContenedor, nombrePanel);
+        panelContenedor.removeAll();
+
+        switch (nombrePanel) {
+            case "admin":
+                panelContenedor.add(new PanelAdministrador(), "admin");
+                cardLayout.show(panelContenedor, "admin");
+                break;
+            case "empleado":
+                panelContenedor.add(new PanelEmpleado(), "empleado");
+                cardLayout.show(panelContenedor, "empleado");
+                break;
+            default:
+                panelContenedor.add(new LoginPanel(this), "login");
+                cardLayout.show(panelContenedor, "login");
+                break;
+        }
+
+        panelContenedor.revalidate();
+        panelContenedor.repaint();
     }
+
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(VentanaPrincipal::new);

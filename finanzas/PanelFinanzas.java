@@ -8,8 +8,12 @@ public class PanelFinanzas extends JPanel {
         setLayout(null);
         setBackground(new Color(245, 245, 255));
         // Botón de retroceso al menú principal del administrador (empleados)
-        JButton btnBack = new JButton("<---------------");
-        btnBack.setBounds(10, 10, 100, 40);
+        JButton btnBack = new JButton("\u2190");
+        btnBack.setForeground(new Color(255, 0, 0));
+        btnBack.setBackground(new Color(255, 255, 255));
+        btnBack.setVerticalAlignment(SwingConstants.BOTTOM);
+        btnBack.setFont(new Font("Arial", Font.BOLD, 30));
+        btnBack.setBounds(10, 10, 70, 40);
         btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnBack.addActionListener(e -> cardLayout.show(panelPrincipal, "Administrador"));
         add(btnBack);

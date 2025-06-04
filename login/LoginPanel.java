@@ -6,6 +6,8 @@ import java.awt.event.*;
 import java.sql.*;
 import conexion.ConexionBD;
 import proyecto_SaludHuellitas.VentanaPrincipal;
+import modelo.UsuarioActivo;
+
 
 public class LoginPanel extends JPanel {
     private VentanaPrincipal ventanaPrincipal;
@@ -124,8 +126,10 @@ public class LoginPanel extends JPanel {
             String contrasena = new String(psContraseña.getPassword()).trim();
 
             if (validarLogin(correo, contrasena)) {
-                String rol = obtenerRol(correo);
+                guardarUsuarioActivo(correo); // ⚠️ << NUEVO
+                String rol = UsuarioActivo.rol;
                 JOptionPane.showMessageDialog(this, "Bienvenido " + rol);
+
 
                 if ("Administrador".equalsIgnoreCase(rol)) {
                     ventanaPrincipal.mostrarPanel("admin");
@@ -174,4 +178,23 @@ public class LoginPanel extends JPanel {
         }
         return null;
     }
+    private void guardarUsuarioActivo(String correo) {
+        try (Connection conn = ConexionBD.conectar()) {
+            String sql = "SELECT id_usuario, rol, id_sucursal FROM usuarios_huellitas WHERE correo = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, correo);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                UsuarioActivo.id = rs.getInt("id_usuario");
+                UsuarioActivo.correo = correo;
+                UsuarioActivo.rol = rs.getString("rol");
+                UsuarioActivo.idSucursal = rs.getInt("id_sucursal"); // importante para empleados
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al obtener datos del usuario: " + e.getMessage());
+        }
+    }
+
 }
